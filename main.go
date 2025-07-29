@@ -28,6 +28,6 @@ func main() {
 
 	fmt.Println("Сырой JSON:")
 	fmt.Println(string(body))
-	fmt.Println("---")
 
+	//json.Unmarshal()
 }
