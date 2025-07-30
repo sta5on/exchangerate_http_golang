@@ -20,14 +20,19 @@ func GetExchangeURL(currency string) string {
 
 func main() {
 	log.Println("App is starting")
+	defer log.Println("\nApp is ending")
 	//
 	//Запрос по апи, сохранение ответа в жсон response.json
 	//
 	//write_to_file(getRates())
 	//
-	defer log.Println("App is ending")
-	////json.Unmarshal()
-	fmt.Println(loadRates("response.json"))
+
+	curr1 := "USD"
+	curr2 := "EUR"
+
+	rate1, rate2 := getValues("response.json", curr1, curr2)
+	fmt.Printf("\nFirst Rate %s, curr: %v, second Rate %f, curr %s \n", rate1, curr1, rate2, curr2)
+
 }
 
 func getRates() (response string) {
@@ -46,6 +51,22 @@ func getRates() (response string) {
 
 	response = string(body)
 	return response
+}
+
+func getValues(file string, curr1 string, curr2 string) (rate1 float64, rate2 float64) {
+	rates, err := loadRates(file)
+	if err != nil {
+		log.Fatal(err)
+	}
+	rate1, ok := rates.ConversionRates[curr1]
+	if !ok {
+		fmt.Println("Currency &s not found", curr2)
+	}
+	rate2, ok = rates.ConversionRates[curr2]
+	if !ok {
+		fmt.Println("Currency &s not found", curr2)
+	}
+	return rate1, rate2
 }
 
 func write_to_file(response string) {
