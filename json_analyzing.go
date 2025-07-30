@@ -1,24 +1,22 @@
 package main
 
-import (
-	"log"
-	"os"
-)
-
 // func sss()  {
 //
-// }
-func govno() {
-	filePath := "example.json"
-	data := []byte("Hello, Go!\nThis is a new line.")
-
-	err := os.WriteFile(filePath, data, 0644)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println("Data written to", filePath)
-}
-
-func main() {
-	govno()
-}
+//// }
+//func loadRates(file string) (*response_usd, error) {
+//	data, err := os.ReadFile(file)
+//	if err != nil {
+//		log.Println(err)
+//		return nil, err
+//	}
+//
+//	var rates response_usd
+//
+//	err = json.Unmarshal(data, &rates)
+//	if err != nil {
+//		log.Println(err)
+//		return nil, err
+//	}
+//
+//	return &rates, nil
+//}

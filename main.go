@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -18,6 +19,18 @@ func GetExchangeURL(currency string) string {
 }
 
 func main() {
+	log.Println("App is starting")
+	//
+	//Запрос по апи, сохранение ответа в жсон response.json
+	//
+	//write_to_file(getRates())
+	//
+	defer log.Println("App is ending")
+	////json.Unmarshal()
+	fmt.Println(loadRates("response.json"))
+}
+
+func getRates() (response string) {
 	resp, err := http.Get(GetExchangeURL("USD"))
 	if err != nil {
 		fmt.Println(err)
@@ -31,9 +44,8 @@ func main() {
 		log.Fatal("Ошибка чтения ответа:", err)
 	}
 
-	response := string(body)
-	write_to_file(response)
-	//json.Unmarshal()
+	response = string(body)
+	return response
 }
 
 func write_to_file(response string) {
@@ -45,4 +57,22 @@ func write_to_file(response string) {
 		log.Fatal(err)
 	}
 	log.Println("Data written to", filePath)
+}
+
+func loadRates(file string) (*response_usd, error) {
+	data, err := os.ReadFile(file)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	var rates response_usd
+
+	err = json.Unmarshal(data, &rates)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return &rates, nil
 }
