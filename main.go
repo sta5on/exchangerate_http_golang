@@ -5,6 +5,11 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
+)
+
+const (
+	api_key = "3e6087d3800124a5a3cb77e7"
 )
 
 // https://v6.exchangerate-api.com/v6/3e6087d3800124a5a3cb77e7/latest/USD
@@ -26,8 +31,18 @@ func main() {
 		log.Fatal("Ошибка чтения ответа:", err)
 	}
 
-	fmt.Println("Сырой JSON:")
-	fmt.Println(string(body))
-
+	response := string(body)
+	write_to_file(response)
 	//json.Unmarshal()
+}
+
+func write_to_file(response string) {
+	filePath := "response.json"
+	data := []byte(response)
+
+	err := os.WriteFile(filePath, data, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Data written to", filePath)
 }
