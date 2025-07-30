@@ -1,0 +1,2 @@
+Hello, Go!
+This is a new line.
