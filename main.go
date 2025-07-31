@@ -1,24 +1,10 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
 	"log"
-	"net/http"
-	"os"
 	"strconv"
-	"time"
 )
-
-const (
-	api_key = "3e6087d3800124a5a3cb77e7"
-)
-
-// https://v6.exchangerate-api.com/v6/3e6087d3800124a5a3cb77e7/latest/USD
-func GetExchangeURL(currency string) string {
-	return fmt.Sprintf("https://v6.exchangerate-api.com/v6/%s/latest/%s", api_key, currency)
-}
 
 func main() {
 	log.Println("App is starting")
@@ -26,7 +12,7 @@ func main() {
 	//
 	//Запрос по апи, сохранение ответа в жсон response.json
 	//
-	//write_to_file(getRates())
+	//writeToFile(getRates())
 	//
 
 	curr1 := "EUR"
@@ -74,141 +60,4 @@ func main() {
 	fmt.Println("Current time:", getCurrTime())
 
 	fmt.Printf("\n\n0_0\n\n")
-}
-
-func exchange(rate1, rate2, amount float64, curr1, curr2 string) (float64, float64, float64, float64, string, string) {
-	//100 юсд в евро
-	//100*0.86=86 EUR
-	//100 евро в mdl
-	//100/0.8681*17.02 = 1957
-
-	result := 0.0
-	if rate1 == 1.0 {
-		fmt.Println("One of you currency is USD")
-		result = amount * rate2
-	}
-	// сделать перевод из чего то другого кроме долларов и наоборот
-
-	//100 mdl to usd = 100 mdl/17.02
-
-	if rate2 == 1.0 {
-		fmt.Println("usd is second")
-		result = amount / rate1
-	}
-
-	// 100 eur to mdl
-	// eur -> usd -> mdl
-	//
-	// 1 usd
-	//0.8 eur
-	//17 mdl
-	//1/0.8*17
-
-	result = amount / rate1 * rate2
-	// 1 / 0.8 * 17
-	rate2 = 1 / rate1 * rate2
-
-	return rate1, rate2, amount, result, curr1, curr2
-}
-
-func getRates() (response string) {
-	resp, err := http.Get(GetExchangeURL("USD"))
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatal("Ошибка чтения ответа:", err)
-	}
-
-	response = string(body)
-	return response
-}
-
-func getCurrTime() string {
-	currentUnix := int(time.Now().Unix())
-	return convertTime(currentUnix)
-}
-
-func convertTime(unix int) string {
-	t := time.Unix(int64(unix), 0) // 0 for nanoseconds
-
-	// Print the time.Time object
-	fmt.Println("Converted time:", t)
-
-	// You can also format the time for a human-readable date string
-	fmt.Println("Formatted time:", t.Format("15:04:05 MST 2006-01-02 "))
-
-	return t.Format("15:04 MST")
-}
-
-func getValues(file string, curr1 string, curr2 string) (rate1 float64, rate2 float64) {
-	rates, err := loadRates(file)
-	if err != nil {
-		log.Fatal(err)
-	}
-	rate1, ok := rates.ConversionRates[curr1]
-	if !ok {
-		fmt.Println("Currency &s not found", curr2)
-	}
-	rate2, ok = rates.ConversionRates[curr2]
-	if !ok {
-		fmt.Println("Currency &s not found", curr2)
-	}
-	return rate1, rate2
-}
-
-func getTime(file string) (timeLast int) {
-	rates, err := loadRates(file)
-	if err != nil {
-		log.Fatal(err)
-	}
-	timeLast = rates.TimeLastUpdateUnix
-
-	return timeLast
-}
-
-func getActualityTime() (hours, minutes int) {
-	currentUnix := int(time.Now().Unix())
-	targetUnix := getTime("response.json")
-	diffSeconds := currentUnix - targetUnix
-
-	hours = diffSeconds / 3600
-	minutes = (diffSeconds % 3600) / 60
-	return hours, minutes
-}
-
-//func calculateReturn()
-
-func write_to_file(response string) {
-	filePath := "response.json"
-	data := []byte(response)
-
-	err := os.WriteFile(filePath, data, 0644)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println("Data written to", filePath)
-}
-
-func loadRates(file string) (*response_usd, error) {
-	data, err := os.ReadFile(file)
-	if err != nil {
-		log.Println(err)
-		return nil, err
-	}
-
-	var rates response_usd
-
-	err = json.Unmarshal(data, &rates)
-	if err != nil {
-		log.Println(err)
-		return nil, err
-	}
-
-	return &rates, nil
 }
