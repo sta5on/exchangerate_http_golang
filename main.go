@@ -28,7 +28,7 @@ func main() {
 	//write_to_file(getRates())
 	//
 
-	curr1 := "USD"
+	curr1 := "EUR"
 	curr2 := "MDL"
 	result := 0.0
 
@@ -76,6 +76,18 @@ func exchange(rate1, rate2, amount float64, curr1, curr2 string) (float64, float
 		result = amount * rate2
 	}
 	// сделать перевод из чего то другого кроме долларов и наоборот
+
+	//100 mdl to usd = 100 mdl/17.02
+
+	if rate2 == 1.0 {
+		fmt.Println("usd is second")
+		result = amount / rate1
+	}
+
+	// 100 eur to mdl
+	// eur -> usd -> mdl
+
+	result = amount / rate1 * rate2
 
 	return rate1, rate2, amount, result, curr1, curr2
 }
