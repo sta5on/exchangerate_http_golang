@@ -8,6 +8,7 @@ import (
 
 func main() {
 	log.Println("App is starting")
+	welcomeMsg()
 	defer log.Println("App is ending")
 	go checkFileActual()
 	//
