@@ -21,7 +21,7 @@ func GetExchangeURL(currency string) string {
 
 func main() {
 	log.Println("App is starting")
-	defer log.Println("\nApp is ending")
+	defer log.Println("App is ending")
 	//
 	//Запрос по апи, сохранение ответа в жсон response.json
 	//
@@ -62,6 +62,11 @@ func main() {
 	//в вывод этого говна доабвить дату время актуальности курса! unix тайм взять как то перевести мб или +3 к гмт добавить к тому че имеем хз
 	// сделать отдельными функциями getTime и вывод норм сделать
 	//
+
+	// если НЕ ДОЛЛАР ТО EUR/MDL rate is 17.024895 строка неверна! исправить!
+
+	fmt.Println("Rate is actual for: %d", getTime("response.json"))
+
 }
 
 func exchange(rate1, rate2, amount float64, curr1, curr2 string) (float64, float64, float64, float64, string, string) {
@@ -86,8 +91,15 @@ func exchange(rate1, rate2, amount float64, curr1, curr2 string) (float64, float
 
 	// 100 eur to mdl
 	// eur -> usd -> mdl
+	//
+	// 1 usd
+	//0.8 eur
+	//17 mdl
+	//1/0.8*17
 
 	result = amount / rate1 * rate2
+	// 1 / 0.8 * 17
+	rate2 = 1 / rate1 * rate2
 
 	return rate1, rate2, amount, result, curr1, curr2
 }
@@ -124,6 +136,16 @@ func getValues(file string, curr1 string, curr2 string) (rate1 float64, rate2 fl
 		fmt.Println("Currency &s not found", curr2)
 	}
 	return rate1, rate2
+}
+
+func getTime(file string) (timeLast int) {
+	rates, err := loadRates(file)
+	if err != nil {
+		log.Fatal(err)
+	}
+	timeLast = rates.TimeLastUpdateUnix
+
+	return timeLast
 }
 
 //func calculateReturn()
