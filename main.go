@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 )
 
 const (
@@ -65,8 +66,14 @@ func main() {
 
 	// если НЕ ДОЛЛАР ТО EUR/MDL rate is 17.024895 строка неверна! исправить!
 
-	fmt.Println("Rate is actual for: %d", getTime("response.json"))
+	fmt.Printf("Rate is actual for: %d\n", getTime("response.json"))
 
+	hr, mins := getActualityTime()
+	fmt.Printf("Differnce is %d hours and %d minutes\n", hr, mins)
+	fmt.Println(convertTime(getTime("response.json")))
+	fmt.Println("Current time:", getCurrTime())
+
+	fmt.Printf("\n\n0_0\n\n")
 }
 
 func exchange(rate1, rate2, amount float64, curr1, curr2 string) (float64, float64, float64, float64, string, string) {
@@ -122,6 +129,23 @@ func getRates() (response string) {
 	return response
 }
 
+func getCurrTime() string {
+	currentUnix := int(time.Now().Unix())
+	return convertTime(currentUnix)
+}
+
+func convertTime(unix int) string {
+	t := time.Unix(int64(unix), 0) // 0 for nanoseconds
+
+	// Print the time.Time object
+	fmt.Println("Converted time:", t)
+
+	// You can also format the time for a human-readable date string
+	fmt.Println("Formatted time:", t.Format("15:04:05 MST 2006-01-02 "))
+
+	return t.Format("15:04 MST")
+}
+
 func getValues(file string, curr1 string, curr2 string) (rate1 float64, rate2 float64) {
 	rates, err := loadRates(file)
 	if err != nil {
@@ -146,6 +170,16 @@ func getTime(file string) (timeLast int) {
 	timeLast = rates.TimeLastUpdateUnix
 
 	return timeLast
+}
+
+func getActualityTime() (hours, minutes int) {
+	currentUnix := int(time.Now().Unix())
+	targetUnix := getTime("response.json")
+	diffSeconds := currentUnix - targetUnix
+
+	hours = diffSeconds / 3600
+	minutes = (diffSeconds % 3600) / 60
+	return hours, minutes
 }
 
 //func calculateReturn()
