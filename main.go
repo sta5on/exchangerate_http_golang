@@ -9,6 +9,7 @@ import (
 func main() {
 	log.Println("App is starting")
 	defer log.Println("App is ending")
+	go checkFileActual()
 	//
 	//Запрос по апи, сохранение ответа в жсон response.json
 	//
