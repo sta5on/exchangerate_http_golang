@@ -10,7 +10,7 @@ func exchange(rate1, rate2, amount float64, curr1, curr2 string) (float64, float
 	//100 евро в mdl
 	//100/0.8681*17.02 = 1957
 
-	result := 0.0
+	result = 0.0
 	if rate1 == 1.0 {
 		fmt.Println("One of you currency is USD")
 		result = amount * rate2
