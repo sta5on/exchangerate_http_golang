@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"log"
+	"slices"
 	"strconv"
+	"strings"
 )
 
 func main() {
@@ -20,8 +22,49 @@ func main() {
 	// сделать норм начало проги, ввод валюты, и что бы она сама не закрывалась, только по команде
 	// и всёёёёё
 
-	curr1 := "EUR"
-	curr2 := "MDL"
+	// ввод валют
+	//
+	// ввод
+	// ввод 1
+	// if contain -> break
+	// if not continue
+	// ввод 2
+	// if contain -> break
+	// if not continue
+	//
+	var curr1, curr2 string
+	for {
+		fmt.Print("Enter first currency: ")
+		_, err := fmt.Scanln(&curr1)
+		if err != nil {
+			log.Println("Ошибка ввода:", err)
+			continue
+		}
+
+		curr1 = strings.ToUpper(curr1)
+		if slices.Contains(currencyList[:], curr1) {
+			break
+		}
+		fmt.Printf("%s not found! Try again.\n", curr1)
+	}
+
+	for {
+		fmt.Print("Enter second currency: ")
+		_, err := fmt.Scanln(&curr2)
+		if err != nil {
+			log.Println("Ошибка ввода:", err)
+			continue
+		}
+
+		curr2 = strings.ToUpper(curr2)
+		if slices.Contains(currencyList[:], curr2) {
+			break
+		}
+		fmt.Printf("%s not found! Try again.\n", curr2)
+	}
+
+	fmt.Printf("Вы ввели: %s и %s\n", curr1, curr2)
+
 	result := 0.0
 	// ВЫБОР ВАЛЮТЫ
 	rate1, rate2 := getValues("response.json", curr1, curr2)
@@ -35,15 +78,24 @@ func main() {
 
 	// ВВОД СУММЫ
 	var amountstr string
-	fmt.Print("Enter amount: ")
+	var amount float64
+	for {
+		fmt.Print("Enter amount: ")
 
-	_, err := fmt.Scanln(&amountstr)
-	if err != nil {
-		log.Println("Ошибка ввода:", err)
-	}
-	amount, err := strconv.ParseFloat(amountstr, 64)
-	if err != nil {
-		log.Println(err)
+		_, err := fmt.Scanln(&amountstr)
+		if err != nil {
+			log.Println("Ошибка ввода:", err)
+			continue
+		}
+		amount, err = strconv.ParseFloat(amountstr, 64)
+		if err != nil {
+			log.Println(err)
+			continue
+		}
+		if err == nil {
+			break
+		}
+		fmt.Println("Некорректный ввод")
 	}
 	fmt.Printf("Вы ввели: %f\n", amount)
 
