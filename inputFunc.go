@@ -33,10 +33,16 @@ func currInput() {
 		}
 
 		curr2 = strings.ToUpper(curr2)
-		if slices.Contains(currencyList[:], curr2) {
-			break
+		if curr1 != curr2 {
+			if slices.Contains(currencyList[:], curr2) {
+				break
+			}
 		}
-		fmt.Printf("%s not found! Try again.\n", curr2)
+		if curr1 == curr2 {
+			fmt.Println("You can`t use 2 same currencies")
+		} else {
+			fmt.Printf("%s not found! Try again.\n", curr2)
+		}
 	}
 
 	fmt.Printf("Вы ввели: %s и %s\n", curr1, curr2)
